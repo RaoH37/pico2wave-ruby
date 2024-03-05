@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Pico2Wave
   def self.gem_version
     Gem::Version.new VERSION::STRING
@@ -6,7 +8,7 @@ module Pico2Wave
   module VERSION
     MAJOR = 0
     MINOR = 2
-    TINY  = 0
+    TINY  = 1
 
     STRING = [MAJOR, MINOR, TINY].compact.join('.')
   end

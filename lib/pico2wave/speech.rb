@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'tempfile'
 
 module Pico2Wave
@@ -7,7 +9,7 @@ module Pico2Wave
     def initialize(text, options = {})
       @text = text
       @options = options
-      @tmpfile = Tempfile.new(['pico', '.wav'])
+      @tmpfile = Tempfile.new(%w[pico .wav])
       @tmpfile.close
     end
 
@@ -35,23 +37,25 @@ module Pico2Wave
     end
 
     def pico2wave_command(options)
-      [Pico2Wave::Common.which('pico2wave')] + map_command_options(options) + [%Q{"#{@text}"}]
+      [Pico2Wave::Common.which('pico2wave')] + map_command_options(options) + [%("#{@text}")]
     end
 
     def map_command_options(options)
-      options.map { |k,v| ["-#{k}",v].join(' ') }
+      options.map { |k, v| ["-#{k}", v].join(' ') }
     end
 
     def symbolize_keys(hash)
-      hash.inject({}) do |options, (key, value)|
-        options[(key.to_sym rescue key) || key] = value
-        options
+      hash.transform_keys do |key|
+        begin
+          key.to_sym
+        rescue StandardError
+          key
+        end || key
       end
     end
 
     def play
-      p = Play.new(@tmpfile.path)
-      p.run!
+      Play.new(@tmpfile.path).run!
     end
   end
 end

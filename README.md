@@ -23,7 +23,10 @@ speech.speak # invokes pico2wave + play
 
 ### Ubuntu
 
-    apt-get install libttspico-utils
+```shell
+apt install libttspico-utils
+apt install sox
+```
 
 
 ## Licence

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Pico2Wave
   class Common
     class << self
