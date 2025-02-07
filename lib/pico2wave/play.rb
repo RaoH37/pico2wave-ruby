@@ -19,7 +19,7 @@ module Pico2Wave
     end
 
     def player_command
-      @player_command ||= Pico2Wave::Common.which('play')
+      @player_command ||= Pico2Wave::Common.which('aplay')
     end
   end
 end

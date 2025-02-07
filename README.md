@@ -1,6 +1,6 @@
 # pico2wave-ruby
 
-pico2wave-ruby is a small Ruby API for utilizing [svoxpico](https://doc.ubuntu-fr.org/svoxpico) to create Text-To-Speech wav files.
+Ruby wrapper for **pico2wave** TTS
 
 ## Install
 
@@ -12,11 +12,19 @@ gem "pico2wave-ruby", require: "pico2wave"
 
 ## Examples
 
+### Generate .wav from text
 
 ```ruby
-# Speaks "YO!"
+require 'pico2wave'
+Pico2Wave::Maker.new("Hello!", "/tmp/pico-test.wav").make
+```
+
+### Generate and play text
+
+```ruby
+require 'pico2wave'
 speech = Pico2Wave::Speech.new("Hello!")
-speech.speak # invokes pico2wave + play
+speech.speak
 ```
 
 ## Installing dependencies
@@ -24,8 +32,7 @@ speech.speak # invokes pico2wave + play
 ### Ubuntu
 
 ```shell
-apt install libttspico-utils
-apt install sox
+sudo apt-get install -y libttspico-utils sox
 ```
 
 

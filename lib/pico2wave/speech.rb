@@ -1,61 +1,52 @@
 # frozen_string_literal: true
 
+require 'logger'
+require 'securerandom'
 require 'tempfile'
 
 module Pico2Wave
   class Speech
-    attr_reader :options, :text
+    attr_writer :tmp_wav_path, :logger
 
-    def initialize(text, options = {})
+    def initialize(text)
       @text = text
-      @options = options
-      @tmpfile = Tempfile.new(%w[pico .wav])
-      @tmpfile.close
+      yield(self) if block_given?
     end
 
     def speak
-      save
-      play
+      if save == PICO_STEP_IDLE
+        play
+        true
+      else
+        logger.error 'an error has been detected in the generation of the .wav file'
+        false
+      end
+    ensure
+      File.unlink(tmp_wav_path)
     end
 
     def save
-      line = pico2wave_command(command_options).join(' ')
-      system(line)
+      Pico2Wave::Maker.new(@text, tmp_wav_path).make
+    end
+
+    def tmp_wav_path
+      return @tmp_wav_path if defined?(@tmp_wav_path)
+
+      @tmp_wav_path = File.join(Dir.tmpdir, "pico-#{SecureRandom.hex(4)}.wav").tap do |path|
+        FileUtils.touch path
+      end
+    end
+
+    def logger
+      return @logger if defined?(@logger)
+
+      @logger = Logger.new($stdout)
     end
 
     private
 
-    def command_options
-      default_options.merge(symbolize_keys(options))
-    end
-
-    def default_options
-      {
-        l: 'fr-FR',
-        w: @tmpfile.path
-      }
-    end
-
-    def pico2wave_command(options)
-      [Pico2Wave::Common.which('pico2wave')] + map_command_options(options) + [%("#{@text}")]
-    end
-
-    def map_command_options(options)
-      options.map { |k, v| ["-#{k}", v].join(' ') }
-    end
-
-    def symbolize_keys(hash)
-      hash.transform_keys do |key|
-        begin
-          key.to_sym
-        rescue StandardError
-          key
-        end || key
-      end
-    end
-
     def play
-      Play.new(@tmpfile.path).run!
+      Play.new(tmp_wav_path).run!
     end
   end
 end

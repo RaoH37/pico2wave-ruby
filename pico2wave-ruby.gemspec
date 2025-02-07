@@ -10,7 +10,7 @@ Gem::Specification.new do |gem|
   gem.version       = Pico2Wave.gem_version
   gem.date          = `date '+%Y-%m-%d'`
 
-  gem.summary       = 'pico2wave-ruby is small Ruby API for utilizing ‘pico2wave’ to create Text-To-Speech wav files'
+  gem.summary       = 'Ruby wrapper for ‘pico2wave’ TTS'
   gem.description   = 'pico2wave-ruby is small Ruby API for utilizing ‘pico2wave’ to create Text-To-Speech wav files'
 
   gem.author        = 'Maxime Désécot'
